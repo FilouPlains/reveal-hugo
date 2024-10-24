@@ -68,8 +68,15 @@
 {{ end }}
 
 {{ if $hasMermaid }}
-  {{ $mermaidSrc := resources.GetRemote "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js" }}
-  <script type="text/javascript" src="{{ $mermaidSrc.RelPermalink }}"></script>
+  {{- $mermaid_location := $.Param "reveal_hugo.mermaid_cdn" | default "__fetch_cdn__" -}} 
+
+  {{ if eq $mermaid_location "__fetch_mermaid_cdn__"  }}
+    {{ $mermaid_location := resources.GetRemote "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js" }}
+    <script type="text/javascript" src="{{ $mermaid_location.RelPermalink }}"></script>
+  {{ else }}
+    <script type="text/javascript" src="{{ $mermaid_location }}"></script>
+  {{ end  }}
+
   <script type="text/javascript">
     mermaid.initialize({startOnLoad: false});
     let render = (event) => {
@@ -104,9 +111,15 @@
     }
   };
 </script>
-  
-{{ $mathjaxSrc := resources.GetRemote "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" }}
-<script type="text/javascript" id="MathJax-script" async src="{{ $mathjaxSrc.RelPermalink }}"></script>
+
+  {{- $mathjax_location := $.Param "reveal_hugo.mathjax_cdn" | default "__fetch_cdn__" -}} 
+
+  {{ if eq $mathjax_location "__fetch_cdn__"  }}
+    {{ $mathjax_location := resources.GetRemote "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" }}
+    <script type="text/javascript" id="MathJax-script" async src="{{ $mathjax_location.RelPermalink }}"></script>
+  {{ else }}
+    <script type="text/javascript" id="MathJax-script" async src="{{ $mathjax_location }}"></script>
+  {{ end  }}
 {{ end }}
 
 {{- $custom_js := $.Param "reveal_hugo.custom_js" -}}
